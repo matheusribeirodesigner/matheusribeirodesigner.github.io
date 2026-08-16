@@ -69,32 +69,7 @@
     const scrolled = window.scrollY > 40;
     if (scrolled !== headerScrolled) {
       headerScrolled = scrolled;
-      const canAnimate = typeof gsap !== 'undefined' && !document.hidden;
-      if (canAnimate && els.header) {
-        gsap.to(headerAnim, {
-          blur: scrolled ? 14 : 0,
-          bgAlpha: scrolled ? 0.55 : 0,
-          duration: 0.6,
-          ease: 'power2.out',
-          onUpdate: () => {
-            if (els.header) {
-              els.header.style.background = `rgba(5,5,6,${headerAnim.bgAlpha})`;
-              els.header.style.backdropFilter = `blur(${headerAnim.blur}px)`;
-              els.header.style.webkitBackdropFilter = `blur(${headerAnim.blur}px)`;
-            }
-          },
-        });
-        if (els.headerLine) gsap.to(els.headerLine, { opacity: scrolled ? 1 : 0, duration: 0.6, ease: 'power2.out' });
-      } else if (els.header) {
-        els.header.style.transition = 'background 0.4s ease, backdrop-filter 0.4s ease';
-        els.header.style.background = scrolled ? 'rgba(5,5,6,0.55)' : 'rgba(5,5,6,0)';
-        els.header.style.backdropFilter = scrolled ? 'blur(14px)' : 'blur(0px)';
-        els.header.style.webkitBackdropFilter = scrolled ? 'blur(14px)' : 'blur(0px)';
-        if (els.headerLine) {
-          els.headerLine.style.transition = 'opacity 0.4s ease';
-          els.headerLine.style.opacity = scrolled ? '1' : '0';
-        }
-      }
+      if (!menuOpen) setHeaderChrome(scrolled);
     }
   }
   window.addEventListener('scroll', onScroll, { passive: true });
@@ -198,10 +173,41 @@
     });
   }
 
+  function setHeaderChrome(scrolled) {
+    const canAnimate = typeof gsap !== 'undefined' && !document.hidden;
+    if (canAnimate && els.header) {
+      gsap.to(headerAnim, {
+        blur: scrolled ? 14 : 0,
+        bgAlpha: scrolled ? 0.55 : 0,
+        duration: 0.5,
+        ease: 'power2.out',
+        onUpdate: () => {
+          if (els.header) {
+            els.header.style.background = `rgba(5,5,6,${headerAnim.bgAlpha})`;
+            els.header.style.backdropFilter = `blur(${headerAnim.blur}px)`;
+            els.header.style.webkitBackdropFilter = `blur(${headerAnim.blur}px)`;
+          }
+        },
+      });
+      if (els.headerLine) gsap.to(els.headerLine, { opacity: scrolled ? 1 : 0, duration: 0.5, ease: 'power2.out' });
+    } else if (els.header) {
+      els.header.style.background = scrolled ? 'rgba(5,5,6,0.55)' : 'rgba(5,5,6,0)';
+      els.header.style.backdropFilter = scrolled ? 'blur(14px)' : 'blur(0px)';
+      els.header.style.webkitBackdropFilter = scrolled ? 'blur(14px)' : 'blur(0px)';
+      if (els.headerLine) els.headerLine.style.opacity = scrolled ? '1' : '0';
+    }
+  }
+
   function toggleMenu() {
     menuOpen = !menuOpen;
     els.menuBtn.setAttribute('aria-expanded', String(menuOpen));
     els.menuPanel.setAttribute('aria-hidden', String(!menuOpen));
+    // The fullscreen menu overlay sits below the header in z-index (so the
+    // close button stays clickable), which means the header's own painted
+    // background — opaque once scrolled — would otherwise sit on top of the
+    // menu's nav links. Force it transparent while the menu is open, then
+    // restore whatever the scroll position calls for on close.
+    setHeaderChrome(menuOpen ? false : headerScrolled);
     if (!menuTl) return;
     if (reduced) {
       menuTl.progress(menuOpen ? 1 : 0);

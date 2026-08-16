@@ -262,7 +262,7 @@ img, video { max-width: 100%; display: block; }
 
 /* ---------- Sobre ---------- */
 .sobre {
-  position: relative; overflow-x: hidden; overflow-y: visible;
+  position: relative;
   padding: 140px var(--side-pad);
   max-width: 1400px; margin: 0 auto;
 }
@@ -322,6 +322,7 @@ img, video { max-width: 100%; display: block; }
 
 /* ---------- Serviços ---------- */
 .servicos { padding: 100px var(--side-pad) 160px; max-width: 1400px; margin: 0 auto; }
+@media (max-width: 900px) { .servicos { padding: 72px var(--side-pad) 100px; } }
 .servico-row {
   display: grid;
   grid-template-columns: 60px 1fr 1fr;
@@ -347,6 +348,7 @@ img, video { max-width: 100%; display: block; }
 
 /* ---------- Processo ---------- */
 .processo { padding: 100px var(--side-pad) 160px; background: var(--bg-alt); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+@media (max-width: 900px) { .processo { padding: 72px var(--side-pad) 100px; } }
 .processo__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; }
 @media (max-width: 860px) { .processo__grid { grid-template-columns: repeat(2, 1fr); gap: 32px 24px; } }
 @media (max-width: 480px) { .processo__grid { grid-template-columns: 1fr; } }
@@ -357,7 +359,9 @@ img, video { max-width: 100%; display: block; }
 
 /* ---------- Trabalho ---------- */
 .trabalho { padding: 160px 0; }
+@media (max-width: 900px) { .trabalho { padding: 100px 0; } }
 .trabalho__head { padding: 0 var(--side-pad); max-width: 1400px; margin: 0 auto 100px; }
+@media (max-width: 900px) { .trabalho__head { margin: 0 auto 56px; } }
 .trabalho__head .section-title { margin: 0; }
 
 .work-block {
@@ -365,8 +369,10 @@ img, video { max-width: 100%; display: block; }
   border-top: 1px solid var(--border);
   max-width: 1400px; margin: 0 auto;
 }
+@media (max-width: 900px) { .work-block { padding: 40px var(--side-pad); } }
 .work-block:last-child { border-bottom: 1px solid var(--border); }
 .work-block__head { display: flex; align-items: baseline; gap: 24px; margin-bottom: 40px; }
+@media (max-width: 900px) { .work-block__head { margin-bottom: 24px; } }
 .work-block__n { color: var(--accent); font-size: 13px; }
 .work-block__title {
   font-family: var(--font-display);
@@ -613,6 +619,7 @@ body.modal-open { overflow: hidden; }
 
 /* ---------- Contato ---------- */
 .contato { position: relative; overflow: hidden; padding: 160px 0 100px; }
+@media (max-width: 900px) { .contato { padding: 100px 0 72px; } }
 .contato__mark {
   position: absolute; top: 460px; right: -10vw; width: 44vw; max-width: 640px;
   opacity: 0.28; pointer-events: none; z-index: 0;
@@ -625,9 +632,10 @@ body.modal-open { overflow: hidden; }
   font-size: clamp(38px, 7vw, 100px); margin: 0 0 24px; line-height: 0.98;
 }
 .contato__lead { font-size: 18px; line-height: 1.6; color: var(--text-secondary); max-width: 520px; margin: 0 0 88px; }
+@media (max-width: 900px) { .contato__lead { margin: 0 0 56px; } }
 
 .contato__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; margin-bottom: 120px; }
-@media (max-width: 860px) { .contato__grid { grid-template-columns: 1fr; gap: 48px; } }
+@media (max-width: 860px) { .contato__grid { grid-template-columns: 1fr; gap: 48px; margin-bottom: 64px; } }
 
 .contact-form { display: flex; flex-direction: column; gap: 40px; max-width: 520px; }
 .form-field { display: flex; flex-direction: column; gap: 10px; }
