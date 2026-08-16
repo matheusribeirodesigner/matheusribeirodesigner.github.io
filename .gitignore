@@ -1,0 +1,37 @@
+# Claude Code tooling (local only, not part of the published site)
+.claude/
+
+# Original Claude Design source files — preserved locally, not used by the
+# deployed static site (index.html/css/js/assets is the real site)
+Portfolio.dc.html
+Typography-Options.dc.html
+support.js
+image-slot.js
+.thumbnail
+uploads/
+debug/
+
+# Unreferenced/unused local assets (not linked from index.html, js, or css)
+assets/video/
+Caneca Azul Beb.png
+Caneca Cobre.png
+Caneca branca.png
+Justificativa ícones.png
+Post 1 (1).png
+Post 2.png
+Post 3 (1).png
+Rodada 1 PT 2.png
+Story 1.png
+Story 2.png
+Story 3.png
+TIRANTE MARROM.png
+TIRANTE PRETO.png
+Tela 1.png
+Tela 2.png
+É amanhã.png
+É hoje.png
+
+# OS junk
+.DS_Store
+Thumbs.db
+node_modules/
