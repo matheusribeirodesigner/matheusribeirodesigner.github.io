@@ -263,6 +263,7 @@ img, video { max-width: 100%; display: block; }
 /* ---------- Sobre ---------- */
 .sobre {
   position: relative;
+  overflow-x: clip;
   padding: 140px var(--side-pad);
   max-width: 1400px; margin: 0 auto;
 }
@@ -272,6 +273,7 @@ img, video { max-width: 100%; display: block; }
   background: radial-gradient(ellipse 46% 34% at 34% 36%, rgba(147, 51, 234, 0.13), transparent 68%);
   filter: blur(64px); pointer-events: none; z-index: 0;
 }
+@media (max-width: 560px) { .sobre__glow-bg { width: 420px; left: -18%; } }
 .sobre__eyebrow { position: relative; z-index: 1; margin-bottom: 72px; }
 .sobre__grid {
   display: grid;
