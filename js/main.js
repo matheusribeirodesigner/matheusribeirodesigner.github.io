@@ -465,7 +465,6 @@
       { slug: 'kpop-day-outdoor', title: 'K-pop Day — Outdoor', category: 'Impressos & Grande Formato', tags: 'Outdoor', count: 1 },
       { slug: 'playcity-sinalizacao', title: 'Playcity — Sinalização de Parque', category: 'Impressos & Grande Formato', tags: 'Sinalização · Totens · Grande Formato', count: 5 },
       { slug: 'rock-na-calcada-brindes', title: 'Rock na Calçada — Brindes', category: 'Impressos & Grande Formato', tags: 'Brindes · Adesivos', count: 1 },
-      { title: 'Arena Uptown — Rebranding', category: 'Impressos & Grande Formato', placeholder: 'Substituir: fotos de checking do outdoor instalado' },
     ],
     web: [
       { slug: 'spw', title: 'SPW', category: 'Web & Landing Pages', count: 1 },
@@ -507,8 +506,8 @@
           : '';
         const focusStyle = project.focus ? ` style="object-position: ${project.focus}"` : '';
         const media = project.video
-          ? `<video src="${cover}" muted loop playsinline preload="none" data-video-card${focusStyle}></video>`
-          : `<img src="${cover}" alt="${project.title} — ${project.category}" loading="lazy"${focusStyle}>`;
+          ? `<video src="${cover}" muted loop playsinline preload="none" data-video-card controlsList="nodownload" disablePictureInPicture${focusStyle}></video>`
+          : `<img src="${cover}" alt="${project.title} — ${project.category}" loading="lazy" draggable="false"${focusStyle}>`;
         return `<button type="button" class="project-card" data-category="${category}" data-project-index="${i}" aria-haspopup="dialog">
           <div class="project-card__media">
             ${media}
@@ -638,8 +637,8 @@
     function renderMedia() {
       const src = currentImages[currentIndex];
       mediaEl.innerHTML = currentProject.video
-        ? `<video src="${src}" controls playsinline autoplay></video>`
-        : `<img src="${src}" alt="${currentProject.title} — imagem ${currentIndex + 1}">`;
+        ? `<video src="${src}" controls playsinline autoplay controlsList="nodownload noremoteplayback" disablePictureInPicture></video>`
+        : `<img src="${src}" alt="${currentProject.title} — imagem ${currentIndex + 1}" draggable="false">`;
       titleEl.textContent = currentProject.title;
       categoryEl.textContent = currentProject.category;
       tagsEl.textContent = currentProject.tags || '';
@@ -804,10 +803,25 @@
     });
   }
 
+  // ---------- Portfolio image protection ----------
+  // A casual deterrent, not real DRM: blocks right-click "save image"/drag-out
+  // and the video controls' native download button on project media. Scoped
+  // to project cards + the case modal only — the rest of the site (text,
+  // links, contact form) keeps normal browser behavior.
+  function setupImageProtection() {
+    document.addEventListener('contextmenu', (e) => {
+      if (e.target.closest('.project-card__media, .project-modal__media')) e.preventDefault();
+    });
+    document.addEventListener('dragstart', (e) => {
+      if (e.target.closest('.project-card__media, .project-modal__media')) e.preventDefault();
+    });
+  }
+
   // ---------- Boot ----------
   renderProjectGrids();
   setupProjectSliders();
   setupGalleryModal();
+  setupImageProtection();
 
   function waitForGsapAndSetup(attempt = 0) {
     const ready = typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined' && els.hero;
