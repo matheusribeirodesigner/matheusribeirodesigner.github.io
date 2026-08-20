@@ -82,6 +82,17 @@ const RotateCcw = p => /*#__PURE__*/React.createElement(Icon, p, /*#__PURE__*/Re
 }), /*#__PURE__*/React.createElement("polyline", {
   points: "3 3 3 9 9 9"
 }));
+const X = p => /*#__PURE__*/React.createElement(Icon, p, /*#__PURE__*/React.createElement("line", {
+  x1: "18",
+  y1: "6",
+  x2: "6",
+  y2: "18"
+}), /*#__PURE__*/React.createElement("line", {
+  x1: "6",
+  y1: "6",
+  x2: "18",
+  y2: "18"
+}));
 const ExternalLink = p => /*#__PURE__*/React.createElement(Icon, p, /*#__PURE__*/React.createElement("path", {
   d: "M14 3h7v7"
 }), /*#__PURE__*/React.createElement("path", {
@@ -886,7 +897,13 @@ function TreinoApp() {
     style: styles.timerOverlay
   }, /*#__PURE__*/React.createElement("div", {
     style: styles.timerCard
-  }, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: dismissTimer,
+    "aria-label": "Fechar",
+    style: styles.timerCloseBtn
+  }, /*#__PURE__*/React.createElement(X, {
+    size: 15
+  })), /*#__PURE__*/React.createElement("div", {
     style: styles.timerRingWrap
   }, /*#__PURE__*/React.createElement("svg", {
     width: "120",
@@ -1235,6 +1252,7 @@ const styles = {
     backdropFilter: "blur(4px)"
   },
   timerCard: {
+    position: "relative",
     background: "#12151A",
     border: "1px solid #20242A",
     borderRadius: 20,
@@ -1243,6 +1261,21 @@ const styles = {
     flexDirection: "column",
     alignItems: "center",
     animation: "pulseRing 2s infinite"
+  },
+  timerCloseBtn: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    width: 30,
+    height: 30,
+    borderRadius: 99,
+    border: "1px solid #2A2F36",
+    background: "#1B1F25",
+    color: "#8A919C",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer"
   },
   timerRingWrap: {
     position: "relative",
