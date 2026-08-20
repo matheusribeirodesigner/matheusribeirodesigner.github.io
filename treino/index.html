@@ -529,6 +529,7 @@ const DAYS = {
   }
 };
 const DAY_ORDER = ["A", "B", "C"];
+const PROGRAM_TOTAL_DAYS = 30;
 const WEEKDAY_NAMES = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 function fmtTime(s) {
   const m = Math.floor(s / 60).toString().padStart(2, "0");
@@ -551,6 +552,7 @@ function TreinoApp() {
   const [timer, setTimer] = useState(null);
   const [loaded, setLoaded] = useState(false);
   const [toast, setToast] = useState(null);
+  const [daysCompleted, setDaysCompleted] = useState(0);
   const intervalRef = useRef(null);
   const saveTimeoutRef = useRef(null);
   useEffect(() => {
@@ -564,8 +566,14 @@ function TreinoApp() {
       const raw = localStorage.getItem("ag-history");
       if (raw) loadedHistory = JSON.parse(raw);
     } catch (e) {}
+    let loadedDays = 0;
+    try {
+      const raw = localStorage.getItem("ag-days-completed");
+      if (raw) loadedDays = Math.max(0, Math.min(PROGRAM_TOTAL_DAYS, parseInt(raw, 10) || 0));
+    } catch (e) {}
     setLoads(loadedLoads);
     setHistory(loadedHistory);
+    setDaysCompleted(loadedDays);
     setLoaded(true);
   }, []);
   useEffect(() => {
@@ -666,10 +674,13 @@ function TreinoApp() {
       return;
     }
     const newHistory = [...history, ...entries];
+    const newDaysCompleted = Math.min(PROGRAM_TOTAL_DAYS, daysCompleted + 1);
     setHistory(newHistory);
+    setDaysCompleted(newDaysCompleted);
     try {
       localStorage.setItem("ag-history", JSON.stringify(newHistory));
-      showToast(`Treino ${activeDay} salvo — ${entries.length} exercícios registrados`);
+      localStorage.setItem("ag-days-completed", String(newDaysCompleted));
+      showToast(`Treino ${activeDay} salvo — dia ${newDaysCompleted}/${PROGRAM_TOTAL_DAYS} do programa`);
       setDoneStages({});
     } catch (e) {
       showToast("Erro ao salvar. Tente novamente.");
@@ -711,6 +722,19 @@ function TreinoApp() {
   }, "ALÉM DA GENÉTICA")), /*#__PURE__*/React.createElement("span", {
     style: styles.brandVersion
   }, "2.0")), /*#__PURE__*/React.createElement("div", {
+    style: styles.programRow
+  }, /*#__PURE__*/React.createElement("span", {
+    style: styles.programLabel
+  }, "PROGRAMA"), /*#__PURE__*/React.createElement("div", {
+    style: styles.programTrack
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      ...styles.programFill,
+      width: `${Math.round(daysCompleted / PROGRAM_TOTAL_DAYS * 100)}%`
+    }
+  })), /*#__PURE__*/React.createElement("span", {
+    style: styles.programCount
+  }, daysCompleted, "/", PROGRAM_TOTAL_DAYS)), /*#__PURE__*/React.createElement("div", {
     style: styles.tabRow
   }, DAY_ORDER.map(k => {
     const d = DAYS[k];
@@ -980,6 +1004,38 @@ const styles = {
     fontSize: 11,
     color: "#5A6070",
     fontFamily: "ui-monospace, monospace"
+  },
+  programRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    padding: "0 16px 10px"
+  },
+  programLabel: {
+    fontSize: 9.5,
+    color: "#5A6070",
+    letterSpacing: "0.08em",
+    fontWeight: 700,
+    flexShrink: 0
+  },
+  programTrack: {
+    flex: 1,
+    height: 5,
+    borderRadius: 99,
+    background: "#1B1F25",
+    overflow: "hidden"
+  },
+  programFill: {
+    height: "100%",
+    borderRadius: 99,
+    background: "#35D07F",
+    transition: "width .3s ease"
+  },
+  programCount: {
+    fontSize: 11,
+    color: "#8A919C",
+    fontFamily: "ui-monospace, monospace",
+    flexShrink: 0
   },
   tabRow: {
     display: "flex",
