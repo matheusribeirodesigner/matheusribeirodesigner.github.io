@@ -583,15 +583,18 @@ function TreinoApp() {
     setToast(msg);
     setTimeout(() => setToast(null), 2000);
   };
+  const saveLoadsNow = newLoads => {
+    try {
+      localStorage.setItem("ag-loads", JSON.stringify(newLoads));
+      return true;
+    } catch (e) {
+      console.error("Erro ao salvar cargas", e);
+      return false;
+    }
+  };
   const saveLoads = useCallback(newLoads => {
     clearTimeout(saveTimeoutRef.current);
-    saveTimeoutRef.current = setTimeout(async () => {
-      try {
-        localStorage.setItem("ag-loads", JSON.stringify(newLoads));
-      } catch (e) {
-        console.error("Erro ao salvar cargas", e);
-      }
-    }, 500);
+    saveTimeoutRef.current = setTimeout(() => saveLoadsNow(newLoads), 500);
   }, []);
   const handleLoadChange = (exerciseId, value) => {
     setLoads(prev => {
@@ -602,6 +605,11 @@ function TreinoApp() {
       saveLoads(next);
       return next;
     });
+  };
+  const handleSaveLoadClick = () => {
+    clearTimeout(saveTimeoutRef.current);
+    const ok = saveLoadsNow(loads);
+    showToast(ok ? "Carga salva" : "Erro ao salvar. Tente novamente.");
   };
   const toggleStage = (exerciseId, stageIdx, stage) => {
     setDoneStages(prev => {
@@ -818,7 +826,17 @@ function TreinoApp() {
       style: styles.loadInput
     }), /*#__PURE__*/React.createElement("span", {
       style: styles.loadUnit
-    }, "kg"), hist.length > 1 && /*#__PURE__*/React.createElement("div", {
+    }, "kg"), /*#__PURE__*/React.createElement("button", {
+      onClick: handleSaveLoadClick,
+      style: {
+        ...styles.saveLoadBtn,
+        borderColor: day.accent,
+        color: day.accent
+      }
+    }, /*#__PURE__*/React.createElement(Check, {
+      size: 12,
+      strokeWidth: 3
+    }), "Salvar"), hist.length > 1 && /*#__PURE__*/React.createElement("div", {
       style: styles.sparkline
     }, hist.map((v, i) => /*#__PURE__*/React.createElement("div", {
       key: i,
@@ -1121,6 +1139,19 @@ const styles = {
   loadUnit: {
     fontSize: 10.5,
     color: "#5A6070"
+  },
+  saveLoadBtn: {
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
+    background: "transparent",
+    border: "1.5px solid",
+    borderRadius: 7,
+    padding: "4px 8px",
+    fontSize: 10.5,
+    fontWeight: 700,
+    cursor: "pointer",
+    flexShrink: 0
   },
   sparkline: {
     display: "flex",
