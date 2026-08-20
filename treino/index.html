@@ -543,21 +543,19 @@ function TreinoApp() {
   const intervalRef = useRef(null);
   const saveTimeoutRef = useRef(null);
   useEffect(() => {
-    (async () => {
-      let loadedLoads = {};
-      let loadedHistory = [];
-      try {
-        const res = Promise.resolve({ value: localStorage.getItem("ag-loads") });
-        if (res && res.value) loadedLoads = JSON.parse(res.value);
-      } catch (e) {}
-      try {
-        const res = Promise.resolve({ value: localStorage.getItem("ag-history") });
-        if (res && res.value) loadedHistory = JSON.parse(res.value);
-      } catch (e) {}
-      setLoads(loadedLoads);
-      setHistory(loadedHistory);
-      setLoaded(true);
-    })();
+    let loadedLoads = {};
+    let loadedHistory = [];
+    try {
+      const raw = localStorage.getItem("ag-loads");
+      if (raw) loadedLoads = JSON.parse(raw);
+    } catch (e) {}
+    try {
+      const raw = localStorage.getItem("ag-history");
+      if (raw) loadedHistory = JSON.parse(raw);
+    } catch (e) {}
+    setLoads(loadedLoads);
+    setHistory(loadedHistory);
+    setLoaded(true);
   }, []);
   useEffect(() => {
     if (timer && timer.seconds > 0) {
