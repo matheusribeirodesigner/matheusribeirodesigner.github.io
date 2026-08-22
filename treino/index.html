@@ -652,6 +652,17 @@ function TreinoApp() {
       };
     });
   };
+  const toggleExerciseDone = ex => {
+    setDoneStages(prev => {
+      const current = prev[ex.id] || new Set();
+      const isAllDone = current.size === ex.stages.length;
+      const next = isAllDone ? new Set() : new Set(ex.stages.map((_, i) => i));
+      return {
+        ...prev,
+        [ex.id]: next
+      };
+    });
+  };
   const pauseResumeTimer = () => setTimer(t => t ? {
     ...t,
     running: !t.running
@@ -826,9 +837,12 @@ function TreinoApp() {
         gap: 10,
         alignItems: "flex-start"
       }
-    }, /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: () => toggleExerciseDone(ex),
+      "aria-label": allDone ? "Desmarcar exercício" : "Marcar exercício como feito",
       style: {
         ...styles.numBadge,
+        cursor: "pointer",
         background: allDone ? day.accent : "#20242A",
         color: allDone ? "#0B0D10" : "#8A919C"
       }
@@ -1151,6 +1165,8 @@ const styles = {
   numBadge: {
     width: 24,
     height: 24,
+    padding: 0,
+    border: "none",
     borderRadius: 7,
     display: "flex",
     alignItems: "center",
