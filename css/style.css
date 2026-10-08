@@ -17,7 +17,8 @@
   --accent: #9333ea;
   --accent-glow: rgba(147, 51, 234, 0.16);
 
-  --font-display: 'Archivo Expanded', sans-serif;
+  /* Archivo na largura 125% (Expanded). A largura vem do font-stretch no body. */
+  --font-display: 'Archivo', sans-serif;
   --font-body: 'Manrope', sans-serif;
 
   --side-pad: 48px;
@@ -43,6 +44,7 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-body);
+  font-stretch: 125%;
   cursor: default;
   position: relative;
   overflow-x: hidden;
