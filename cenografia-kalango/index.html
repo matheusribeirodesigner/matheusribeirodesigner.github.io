@@ -644,7 +644,6 @@ body.pausado .chip.on em b { animation-play-state: paused; }
     if (s === cenaCam) setCor('bege');
     if (s.contains(dn)) setPeriodo('dia');
     tocarVideos(); cicloDN(); cicloCam();
-    try { history.replaceState(null, '', `#s${i + 1}`); } catch (e) {}
   }
 
   function setPausa(p) {
