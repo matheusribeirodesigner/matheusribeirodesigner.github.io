@@ -16,7 +16,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>*,*::before,*::after{box-sizing:border-box}img{max-width:100%}[hidden]{display:none!important}</style>
-<title>Kalango Antes e Depois</title>
+
+<title>Kalango Cenografia</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@400;500;600;700;800&display=swap">
@@ -149,6 +150,11 @@ body.semcursor, body.semcursor * { cursor: none !important; }
 .ad-r1 { left: 96px; } .ad-r2 { right: 140px; background: var(--lima); color: var(--tinta); }
 .slide.on .ad.dica { animation: dica 1.6s cubic-bezier(.45,0,.2,1) .6s both; }
 @keyframes dica { 0% { --p: 50%; } 35% { --p: 68%; } 70% { --p: 34%; } 100% { --p: 50%; } }
+.opc { appearance: none; display: inline-flex; align-items: center; gap: 10px; padding: 10px 18px 10px 12px; border-radius: 99px; border: 2px solid rgba(20,50,26,.2); background: transparent; color: var(--tinta); font: 700 20px/1 var(--corpo); cursor: pointer; transition: border-color .3s, background .3s; }
+.opc i { width: 22px; height: 22px; border-radius: 50%; }
+.opc.on { border-color: var(--tinta); background: rgba(20,50,26,.06); }
+#cenalona.b-on .troca .a { opacity: 0; transform: translateX(-6%); }
+#cenalona.b-on .troca .b { opacity: 1; transform: none; }
 /* capa */
 .faixa { position: absolute; bottom: 0; width: 214px; overflow: hidden; }
 .faixa img { width: 100%; height: 100%; object-fit: cover; }
@@ -215,9 +221,11 @@ body.pausado .chip.on em b { animation-play-state: paused; }
 .mos img { width: 100%; height: 100%; object-fit: cover; }
 .mos p { position: absolute; left: 20px; bottom: 16px; margin: 0; font: 700 20px/1 var(--corpo); letter-spacing: .14em; text-transform: uppercase; color: var(--creme); text-shadow: 0 2px 14px rgba(0,0,0,.6); }
 </style>
+
+<div id="carrega" role="status" aria-label="Carregando
 </head>
 <body>
-<div id="carrega" role="status" aria-label="Carregando a apresentação"><div><span class="forma" role="img" aria-label="KALANGO" style="position:relative;display:block;width:300px;height:70px;--m:url(assets/svg/kalango-logotipo.svg);--c:var(--lima)"></span><i></i></div></div>
+a apresentação"><div><span class="forma" role="img" aria-label="KALANGO" style="position:relative;display:block;width:300px;height:70px;--m:url(assets/svg/kalango-logotipo.svg);--c:var(--lima)"></span><i></i></div></div>
 <div class="prog" aria-hidden="true"><i id="prog"></i></div>
 <p class="girar">Gire o celular para ver em tela cheia · toque para avançar</p>
 <main class="palco" id="palco">
@@ -262,7 +270,7 @@ body.pausado .chip.on em b { animation-play-state: paused; }
   <div class="ponto" data-a="up" style="--d:0.63s;left:128px;top:664px;width:392px"><div class="f" style="height:220px;border-top:4px solid var(--lima)"><img src="assets/palco.jpg" alt="Palco" style="object-position:50% 45%"></div><p class="leg" style="color:var(--texto-claro)"><b>Palco</b>Pavilhão ao ar livre</p></div>
   <div class="ponto" data-a="up" style="--d:0.7s;left:552px;top:664px;width:392px"><div class="f" style="height:220px;border-top:4px solid var(--lima)"><img src="assets/palco-interno.jpg" alt="Palco na tenda" style="object-position:42% 45%"></div><p class="leg" style="color:var(--texto-claro)"><b>Palco na tenda</b>Mesma arte, palco coberto</p></div>
   <div class="ponto" data-a="up" style="--d:0.77s;left:976px;top:664px;width:392px"><div class="f" style="height:220px;border-top:4px solid var(--lima)"><img src="assets/espuma.jpg" alt="Banho de espuma" style="object-position:40% 40%"></div><p class="leg" style="color:var(--texto-claro)"><b>Banho de espuma</b>Letreiro e lona na parede</p></div>
-  <div class="ponto" data-a="up" style="--d:0.84s;left:1400px;top:664px;width:392px"><div class="f" style="height:220px;border-top:4px solid var(--lima)"><img src="assets/lona.jpg" alt="Lona de escorregar" style="object-position:60% 60%"></div><p class="leg" style="color:var(--texto-claro)"><b>Lona de escorregar</b>Lona estampada e bandeiras no gramado</p></div>
+  <div class="ponto" data-a="up" style="--d:0.84s;left:1400px;top:664px;width:392px"><div class="f" style="height:220px;border-top:4px solid var(--lima)"><img src="assets/lona.jpg" alt="Lona de escorregar" style="object-position:60% 60%"></div><p class="leg" style="color:var(--texto-claro)"><b>Lona de escorregar</b>Duas opções: verde e rosa</p></div>
   <p class="leg abs" data-a="fade" style="--d:1s;left:128px;top:992px;width:1400px;color:var(--lima)">Pontos já propostos. Novas ambientações entram nas próximas etapas.</p>
 </section>
 
@@ -421,24 +429,33 @@ body.pausado .chip.on em b { animation-play-state: paused; }
 </section>
 
 <!-- LONA DE ESCORREGAR -->
-<section class="slide claro" data-cap="Lona de escorregar" aria-label="Lona de escorregar">
-  <div class="abs" data-a="espinho" style="--d:.05s;left:0;top:0;width:1120px;height:1080px;overflow:hidden"><img style="width:100%;height:100%;object-fit:cover;object-position:52% 60%" src="assets/lona.jpg" alt="Lona de escorregar estampada com KA LAN GO no gramado, com pessoas deslizando e quatro bandeiras com as estampas oficiais ao lado"></div>
+<section class="slide claro" data-cap="Lona de escorregar" aria-label="Lona de escorregar" id="cenalona">
+  <div class="troca" data-a="espinho" style="--d:.05s;left:0;top:0;width:1120px;height:1080px"><img class="a" style="object-position:52% 60%" src="assets/lona.jpg" alt="Opção verde: lona KA LAN GO verde no gramado, com bandeiras de vento"><img class="b" style="object-position:52% 60%" src="assets/lona-magenta.jpg" alt="Opção rosa: lona KA LAN GO rosa no gramado, com bandeiras de vento"></div>
   <p class="olho abs" data-a="up" style="--d:.3s;left:1220px;top:110px;color:var(--mag)">10 · Lona de escorregar</p>
   <h2 class="tit t3 abs" data-a="up" style="--d:.4s;left:1220px;top:160px;width:600px">O gramado vira pista.</h2>
-  <p class="txt abs" data-a="up" style="--d:.5s;left:1220px;top:330px;width:590px;font-size:25px;color:var(--texto-esc)">Uma lona estampada com o KA·LAN·GO e bandeiras com as estampas oficiais transformam o gramado em brincadeira com a cara da marca.</p>
-  <p class="nota abs" data-a="fade" style="--d:.7s;left:1220px;top:446px;width:590px;margin:0;color:var(--texto-esc)">Segurança, aderência e fixação no gramado a validar.</p>
-  <figure class="abs" data-a="zoom" style="--d:.65s;left:1220px;top:500px;width:270px;margin:0"><img style="width:262px" src="assets/lona-arte.webp" alt="Vetor de produção da lona de escorregar"><figcaption class="leg" style="margin-top:10px;color:var(--texto-esc)"><b style="color:var(--mag)">Vetor</b> · lona</figcaption></figure>
-  <figure class="abs" data-a="up" style="--d:.9s;left:1530px;top:836px;width:280px;margin:0"><div style="display:flex;gap:8px"><img style="width:62px;height:92px;object-fit:cover" src="assets/padrao_19.webp" alt="Bandeira G índigo"><img style="width:62px;height:92px;object-fit:cover" src="assets/padrao_10.webp" alt="Bandeira sinuosidades magenta"><img style="width:62px;height:92px;object-fit:cover" src="assets/padrao_05.webp" alt="Bandeira com cabeças do Kalango em verde-mata"><img style="width:62px;height:92px;object-fit:cover" src="assets/padrao_12.webp" alt="Bandeira KA LAN GO verde-lima"></div><figcaption class="leg" style="margin-top:10px;color:var(--texto-esc)"><b style="color:var(--mag)">Vetores</b> · bandeiras</figcaption></figure>
-  <div class="abs mat" data-a="up" style="--d:.8s;left:1530px;top:500px;width:280px;color:var(--tinta)">
-    <h4 style="color:var(--mag)">Materialidade proposta</h4>
-    <ul><li style="font-size:21px">Lona de PVC impressa</li><li style="font-size:21px">Bordas soldadas com ilhoses</li><li style="font-size:21px">Bandeiras com mastro e base</li><li style="font-size:21px">Água corrente na superfície</li></ul>
+  <p class="txt abs" data-a="up" style="--d:.5s;left:1220px;top:330px;width:590px;font-size:24px;color:var(--texto-esc)">Lona estampada com o KA·LAN·GO e bandeiras de vento com as estampas oficiais. A lona tem duas opções de cor: verde e rosa.</p>
+  <div class="abs" data-a="up" style="--d:.55s;left:1220px;top:468px;display:flex;gap:12px" role="group" aria-label="Opção de cor da lona">
+    <button type="button" class="opc on" data-opc="a" aria-pressed="true"><i style="background:#1F4B22"></i>Verde</button>
+    <button type="button" class="opc" data-opc="b" aria-pressed="false"><i style="background:#C2338F"></i>Rosa</button>
   </div>
+  <figure class="abs" data-a="zoom" style="--d:.65s;left:1220px;top:550px;width:240px;margin:0"><div class="troca" style="position:relative;width:240px;height:373px;background:transparent"><img class="a" style="object-fit:contain" src="assets/lona-arte.webp" alt="Vetor da lona verde"><img class="b" style="object-fit:contain" src="assets/lona-arte-magenta.webp" alt="Vetor da lona rosa"></div><figcaption class="leg" style="margin-top:10px;color:var(--texto-esc)"><b style="color:var(--mag)">Vetor</b> · lona</figcaption></figure>
+  <div class="abs mat" data-a="up" style="--d:.8s;left:1500px;top:550px;width:310px;color:var(--tinta)">
+    <h4 style="color:var(--mag)">Materialidade proposta</h4>
+    <ul><li style="font-size:20px">Lona de PVC impressa</li><li style="font-size:20px">Bordas soldadas com ilhoses</li><li style="font-size:20px">Bandeiras com mastro e base</li><li style="font-size:20px">Água corrente na superfície</li></ul>
+  </div>
+  <figure class="abs" data-a="up" style="--d:.9s;left:1500px;top:830px;width:310px;margin:0"><div style="display:flex;gap:8px"><img style="width:62px;height:92px;object-fit:cover" src="assets/padrao_19.webp" alt="Bandeira G índigo"><img style="width:62px;height:92px;object-fit:cover" src="assets/padrao_10.webp" alt="Bandeira sinuosidades magenta"><img style="width:62px;height:92px;object-fit:cover" src="assets/padrao_05.webp" alt="Bandeira com cabeças do Kalango em verde-mata"><img style="width:62px;height:92px;object-fit:cover" src="assets/padrao_12.webp" alt="Bandeira KA LAN GO verde-lima"></div><figcaption class="leg" style="margin-top:10px;color:var(--texto-esc)"><b style="color:var(--mag)">Vetores</b> · bandeiras · segurança e fixação a validar</figcaption></figure>
 </section>
 
-<section class="slide escuro" data-cap="Lona de escorregar · antes e depois" aria-label="Lona de escorregar, foto completa">
-  <div class="ad"><img class="ad-depois" src="assets/lona.jpg" alt="Depois: Lona de escorregar estampada com KA LAN GO no gramado, com pessoas deslizando e quatro bandeiras com as estampas oficiais ao lado"><div class="ad-antes"><img src="assets/antes/lona.jpg" alt="Antes: foto original do local"></div><p class="ad-rot ad-r1">Antes</p><p class="ad-rot ad-r2">Depois</p><div class="ad-barra" role="slider" tabindex="0" aria-label="Comparar antes e depois" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"><span><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6"/></svg></span></div></div>
+<section class="slide escuro" data-cap="Lona verde · antes e depois" aria-label="Lona de escorregar · opção verde, antes e depois">
+  <div class="ad"><img class="ad-depois" src="assets/lona.jpg" alt="Depois: lona verde com bandeiras de vento"><div class="ad-antes"><img src="assets/antes/lona.jpg" alt="Antes: foto original do local"></div><p class="ad-rot ad-r1">Antes</p><p class="ad-rot ad-r2">Depois</p><div class="ad-barra" role="slider" tabindex="0" aria-label="Comparar antes e depois" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"><span><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6"/></svg></span></div></div>
   <div class="abs" style="left:0;bottom:0;width:1920px;height:220px;background:linear-gradient(to top, rgba(10,28,13,.75), rgba(10,28,13,0))"></div>
-  <p class="olho abs" data-a="up" style="--d:.3s;left:96px;top:968px;color:var(--creme)">Lona de escorregar</p>
+  <p class="olho abs" data-a="up" style="--d:.3s;left:96px;top:968px;color:var(--creme)">Lona de escorregar · opção verde</p>
+</section>
+
+<section class="slide escuro" data-cap="Lona rosa · antes e depois" aria-label="Lona de escorregar · opção rosa, antes e depois">
+  <div class="ad"><img class="ad-depois" src="assets/lona-magenta.jpg" alt="Depois: lona rosa com bandeiras de vento"><div class="ad-antes"><img src="assets/antes/lona.jpg" alt="Antes: foto original do local"></div><p class="ad-rot ad-r1">Antes</p><p class="ad-rot ad-r2">Depois</p><div class="ad-barra" role="slider" tabindex="0" aria-label="Comparar antes e depois" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"><span><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6"/></svg></span></div></div>
+  <div class="abs" style="left:0;bottom:0;width:1920px;height:220px;background:linear-gradient(to top, rgba(10,28,13,.75), rgba(10,28,13,0))"></div>
+  <p class="olho abs" data-a="up" style="--d:.3s;left:96px;top:968px;color:var(--creme)">Lona de escorregar · opção rosa</p>
 </section>
 
 <!-- 09 MASCOTE 3D -->
@@ -615,6 +632,10 @@ body.pausado .chip.on em b { animation-play-state: paused; }
       if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); e.stopPropagation(); setP(p + (e.key === 'ArrowRight' ? 5 : -5)); }
     });
   });
+  // opções da lona
+  const cenaLona = document.getElementById('cenalona'); let tLona = null;
+  const setLona = o => { cenaLona.classList.toggle('b-on', o === 'b'); cenaLona.querySelectorAll('.opc').forEach(b => { const on = b.dataset.opc === o; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); }); };
+  cenaLona.querySelectorAll('.opc').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); setLona(b.dataset.opc); clearInterval(tLona); }));
   // pontos de navegação
   const dots = document.getElementById('dots');
   slides.forEach((s, i) => { const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', `Ir para ${s.dataset.cap}`); b.onclick = () => ir(i); dots.appendChild(b); });
@@ -680,6 +701,7 @@ body.pausado .chip.on em b { animation-play-state: paused; }
     if (s === cenaCam) setCor('bege');
     if (s.contains(dn)) setPeriodo('dia');
     tocarVideos(); cicloDN(); cicloCam();
+    clearInterval(tLona); if (s === cenaLona) { setLona('a'); if (!pausado) tLona = setInterval(() => setLona(cenaLona.classList.contains('b-on') ? 'a' : 'b'), 3500); }
   }
 
   function setPausa(p) {
