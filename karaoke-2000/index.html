@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Karaokê 2000: demo da tela de TV de um app de karaokê no clima dos videokês dos anos 2000. Projeto de Matheus Ribeiro.">
+<meta property="og:title" content="Karaokê 2000">
+<meta property="og:description" content="Demo da tela de TV: PRESS START, capa com vinil, legenda com contagem e a palavra da vez.">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<title>Karaokê 2000</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Semi+Condensed:wght@500;600;700&family=Exo+2:ital,wght@1,800;1,900&family=VT323&display=swap">
+<style>
+/* Layout: palco 16:9 de videokê dos anos 2000 (o que vai para a TV) e, embaixo, a barra de play em placa inclinada de shape de skate */
+:root{
+  --deep:#040a33; --navy:#0a1650; --blue:#1638e0; --cyan:#2ee6ff; --yellow:#ffd400; --red:#ff2a3d;
+  --text:#eef2ff; --muted:#a3b0ee; --osd:#63ff93; --amber:#ffc23a; --lyr-fill:#36d6ff;
+  --f-lyr:"Archivo Black","Arial Black",Impact,sans-serif;
+  --f-disp:"Exo 2","Arial Black",system-ui,sans-serif;
+  --f-ui:"Barlow Semi Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-osd:"VT323","Courier New",monospace;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+html,body{background:var(--deep);color:var(--text)}
+body{font:16px/1.4 var(--f-ui);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:18px 40px;
+  background:repeating-linear-gradient(-14deg,transparent 0 46px,rgba(46,230,255,.05) 46px 48px),radial-gradient(ellipse 70% 50% at 18% -8%,rgba(47,82,255,.7),transparent 70%),linear-gradient(180deg,#0a1a8c 0,#060f52 520px,var(--deep) 1100px);background-color:var(--deep)}
+.app{max-width:1120px;margin:0 auto;display:grid;gap:16px}
+.head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 20px}
+.head img{width:min(260px,60vw);display:block}
+.tag{font:900 italic clamp(18px,3vw,26px)/1.1 var(--f-disp);text-transform:uppercase;text-wrap:balance;max-width:24ch}
+.tag em{color:var(--yellow);font-style:inherit}
+
+/* ---------- palco ---------- */
+.frame{padding:4px;background:linear-gradient(135deg,var(--yellow),var(--cyan) 40%,var(--blue) 70%,var(--red));clip-path:polygon(0 0,calc(100% - 26px) 0,100% 26px,100% 100%,26px 100%,0 calc(100% - 26px))}
+.stage{position:relative;aspect-ratio:16/9;max-width:100%;overflow:hidden;background:#000;container-type:inline-size;user-select:none}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.cover-bg{position:absolute;inset:-8%;background:#000 center/cover no-repeat;filter:blur(2.2cqw) saturate(1.25) brightness(.5);transform:scale(1.05);opacity:0;transition:opacity .6s}
+.vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.5) 100%);pointer-events:none}
+.scan{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(0,0,0,.22) 0 1px,transparent 1px 3px);mix-blend-mode:multiply;z-index:8}
+.osd{position:absolute;top:2.4cqw;font-family:var(--f-osd);font-size:2.9cqw;line-height:1;color:var(--osd);text-shadow:0 0 .4em rgba(99,255,147,.7),.06em .06em 0 #000;display:flex;gap:1.4cqw;letter-spacing:.05em;z-index:7}
+.osd-l{left:3cqw}.osd-r{right:3.6cqw;color:var(--amber);text-shadow:0 0 .4em rgba(255,194,58,.7),.06em .06em 0 #000;align-items:baseline}
+.osd-r small{font-size:.62em}
+
+/* tela de abertura */
+.start{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:1.2cqw;z-index:6;cursor:pointer;background:none;border:0;color:inherit;font:inherit;padding:0}
+.start img{width:46cqw;display:block;filter:drop-shadow(0 1.2cqw 1.6cqw rgba(0,0,0,.5))}
+.press{font:900 italic 6.4cqw/1 var(--f-disp);letter-spacing:.06em;color:var(--yellow);paint-order:stroke fill;-webkit-text-stroke:.12em var(--deep);text-shadow:.6cqw .6cqw 0 var(--deep);transform:skewX(-10deg);animation:blink 1.1s steps(2,start) infinite}
+.press-s{font-family:var(--f-osd);font-size:2.8cqw;letter-spacing:.3em;color:#fff;text-shadow:0 0 .4em rgba(255,255,255,.6),.06em .06em 0 #000}
+.start:focus-visible{outline:.4cqw solid var(--cyan);outline-offset:-1.2cqw}
+@keyframes blink{to{visibility:hidden}}
+
+/* capa de EP com o vinil saindo */
+.cover-art{position:absolute;left:4.5cqw;top:7cqw;right:5cqw;display:flex;gap:3cqw;align-items:flex-end;opacity:0;transition:opacity .5s;z-index:3}
+.sleeve{position:relative;flex:none;width:25cqw;aspect-ratio:1}
+.sleeve canvas{position:relative;z-index:1;width:100%;height:100%;display:block;border:.35cqw solid #fff;box-shadow:1.1cqw 1.1cqw 0 rgba(4,10,51,.85)}
+.vinyl{position:absolute;top:4%;left:0;width:92%;aspect-ratio:1;border-radius:50%;transform:translateX(var(--vx,0%));box-shadow:.6cqw .8cqw 1.6cqw rgba(0,0,0,.55)}
+.disc{position:absolute;inset:0;border-radius:50%;border:.25cqw solid #050507;
+  background:radial-gradient(circle,transparent 0 33%,#000 33% 34.5%,transparent 34.5%),repeating-radial-gradient(circle,#0b0b0e 0 .22cqw,#18181d .22cqw .44cqw)}
+.lbl{position:absolute;left:33%;top:33%;width:34%;aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle,transparent 0 56%,rgba(0,0,0,.28) 56% 59%,transparent 59%),linear-gradient(135deg,#ff6fd0 0,#d6249b 45%,#7a0f5a 100%);box-shadow:inset 0 0 0 .25cqw rgba(0,0,0,.35)}
+.lbl::before{content:"";position:absolute;left:18%;top:24%;width:30%;height:5%;background:rgba(255,255,255,.55)}
+.lbl::after{content:"";position:absolute;left:44%;top:44%;width:12%;aspect-ratio:1;border-radius:50%;background:#050507}
+.vinyl::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;background:conic-gradient(from 20deg,transparent 0 8%,rgba(255,255,255,.16) 13%,transparent 19% 58%,rgba(255,255,255,.12) 63%,transparent 69%)}
+.cover-tx{display:grid;gap:.5cqw;min-width:0;padding-bottom:.6cqw;margin-left:var(--vout,0)}
+.cover-tx b{font:900 italic 4.4cqw/1.02 var(--f-disp);color:#fff;paint-order:stroke fill;-webkit-text-stroke:.1em var(--navy);text-wrap:balance}
+.cover-tx span{font:700 italic 2.5cqw/1.1 var(--f-ui);color:#dfe8ff;text-shadow:0 .1em .3em rgba(0,0,0,.6)}
+.cover-tx small{font-family:var(--f-osd);font-size:2.1cqw;color:var(--amber);letter-spacing:.06em;text-shadow:0 0 .4em rgba(255,194,58,.6),.06em .06em 0 #000}
+.playing .cover-art,.playing .cover-bg{opacity:1}
+.playing .start{display:none}
+
+/* legenda */
+.lyrics{position:absolute;left:4.5cqw;right:4.5cqw;bottom:4.2cqw;display:grid;gap:1.2cqw;z-index:4;visibility:hidden}
+.playing .lyrics{visibility:visible}
+.slot{position:relative;display:flex;align-items:center;min-height:1.35em;font-size:3.9cqw}
+.s0{justify-content:flex-start}.s1{justify-content:flex-end}
+.wrap{position:relative;display:inline-block;white-space:pre;line-height:1.25;transform:skewX(-7deg)}
+.lyr{font-family:var(--f-lyr);letter-spacing:.01em;paint-order:stroke fill;-webkit-text-stroke:.16em var(--navy)}
+.lyr span{display:inline-block;transform-origin:50% 80%}
+.base{color:#fff;text-shadow:.05em .08em 0 rgba(0,0,0,.55)}
+.fill{position:absolute;inset:0;color:var(--lyr-fill);-webkit-text-stroke-color:#fff;text-shadow:0 0 .35em rgba(54,214,255,.55);visibility:hidden}
+.cnt{position:absolute;top:-3.6cqw;display:grid;place-items:center;min-width:1.25em;height:1.25em;font:900 italic 4.2cqw/1 var(--f-disp);color:var(--deep);
+  background:linear-gradient(180deg,#ffe24a,var(--yellow));border:.18cqw solid #fff;box-shadow:.5cqw .5cqw 0 var(--deep);transform:skewX(-12deg)}
+.s0 .cnt{left:0}.s1 .cnt{right:0}
+.cnt i{font-style:normal;transform:skewX(12deg)}
+
+/* ---------- barra de play ---------- */
+.transport{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;background:linear-gradient(90deg,rgba(22,56,224,.55),rgba(11,31,158,.55));border-top:3px solid var(--yellow);padding:14px 18px;
+  clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,18px 100%,0 calc(100% - 18px))}
+.btn{font:800 14px/1 var(--f-disp);text-transform:uppercase;letter-spacing:.04em;color:#fff;background:linear-gradient(180deg,#2a52ff,#1230c4);border:2px solid #fff;padding:10px 15px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transform:skewX(-12deg);box-shadow:4px 4px 0 var(--deep)}
+.btn > *{transform:skewX(12deg)}
+.btn:active{transform:skewX(-12deg) translate(3px,3px);box-shadow:1px 1px 0 var(--deep)}
+.btn.play{font-size:16px;padding:12px 22px;background:linear-gradient(180deg,#ffe24a,var(--yellow));color:var(--deep);border-color:var(--deep)}
+.btn:focus-visible,.tab:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+.seek{flex:1 1 200px;display:flex;align-items:center;gap:10px;font:20px var(--f-osd);color:var(--osd);min-width:0;font-variant-numeric:tabular-nums}
+.bar{flex:1;height:6px;background:rgba(4,10,51,.7);position:relative}
+.bar i{position:absolute;left:0;top:0;bottom:0;background:var(--yellow);width:0}
+.tabs{display:flex;gap:8px}
+.tab{background:rgba(4,10,51,.6);border:2px solid rgba(255,255,255,.18);color:var(--text);font:800 italic 13px/1 var(--f-disp);text-transform:uppercase;letter-spacing:.03em;padding:9px 12px;cursor:pointer;transform:skewX(-12deg)}
+.tab[aria-pressed="true"]{border-color:var(--yellow);box-shadow:3px 3px 0 var(--yellow);color:#fff}
+
+.note{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px}
+.note div{background:linear-gradient(160deg,#0f2496 0,#0a1766 60%,#08114f);box-shadow:inset 0 0 0 2px rgba(47,82,255,.55);padding:14px 16px;display:grid;gap:6px;align-content:start;min-width:0}
+.note b{font:900 italic 15px/1.1 var(--f-disp);text-transform:uppercase;letter-spacing:.04em;color:var(--yellow)}
+.note p{margin:0;color:var(--muted);font-size:15px;max-width:60ch}
+.note kbd{font:16px var(--f-osd);background:rgba(4,10,51,.7);border:1px solid var(--muted);padding:0 5px;color:#fff}
+@media (prefers-reduced-motion:reduce){.press{animation:none}.cover-art,.cover-bg{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="head">
+    <img src="logo.png" alt="Karaokê">
+    <div class="tag">Pega o mic, <em>solta a voz</em> e manda a manobra.</div>
+  </header>
+
+  <div class="frame">
+    <div class="stage" id="stage">
+      <canvas id="bg" aria-hidden="true"></canvas>
+      <div class="cover-bg" id="coverBg" aria-hidden="true"></div>
+      <div class="vignette"></div>
+      <div class="osd osd-l"><span id="osdState">■ STOP</span><span id="osdTime">00:00</span></div>
+      <div class="osd osd-r"><small>MÚSICA</small><span>Nº 10247</span></div>
+
+      <div class="cover-art" aria-hidden="true">
+        <div class="sleeve">
+          <div class="vinyl" id="vinyl"><div class="disc" id="disc"><i class="lbl"></i></div></div>
+          <canvas id="cover" width="600" height="600"></canvas>
+        </div>
+        <div class="cover-tx" id="coverTx"><b>Neon na Avenida</b><span>Banda Demonstração</span><small>Nº 10247 · Faixa original · 96 BPM</small></div>
+      </div>
+
+      <div class="lyrics" aria-live="off">
+        <div class="slot s0" id="slot0"><div class="wrap"><div class="lyr base"></div><div class="lyr fill" aria-hidden="true"></div></div></div>
+        <div class="slot s1" id="slot1"><div class="wrap"><div class="lyr base"></div><div class="lyr fill" aria-hidden="true"></div></div></div>
+      </div>
+
+      <button class="start" id="start" type="button" aria-label="Começar a cantar">
+        <img src="logo.png" alt="">
+        <span class="press">PRESS START</span>
+        <span class="press-s">PARA CANTAR</span>
+      </button>
+      <div class="scan"></div>
+    </div>
+  </div>
+
+  <div class="transport">
+    <button class="btn play" id="play" type="button"><span id="playLbl">▶ Play</span></button>
+    <button class="btn" id="restart" type="button"><span>⏮ Do início</span></button>
+    <div class="seek"><span id="tCur">00:00</span><div class="bar"><i id="barFill"></i></div><span id="tDur">00:50</span></div>
+    <div class="tabs" role="group" aria-label="Voz do cantor">
+      <button class="tab" type="button" data-voz="sem" aria-pressed="true">Sem voz</button>
+      <button class="tab" type="button" data-voz="com" aria-pressed="false">Com voz</button>
+    </div>
+  </div>
+
+  <section class="note" aria-label="Sobre esta demo">
+    <div><b>O que é</b><p>A tela que vai para a TV no Karaokê 2000. A música é uma faixa original sintetizada aqui mesmo. No app de verdade, as músicas vêm do YouTube e a letra sincronizada vem do LRCLIB.</p></div>
+    <div><b>Repare</b><p>A contagem de 5 a 1 antes da primeira frase, a palavra da vez que pula, a frase que fica na tela até a próxima e o vinil que sai da capa e gira enquanto toca.</p></div>
+    <div><b>Atalhos</b><p><kbd>Espaço</kbd> toca e pausa · <kbd>R</kbd> volta ao início · <kbd>V</kbd> liga e desliga a melodia guia.</p></div>
+  </section>
+</div>
+
+<script>
+(()=>{
+const $=s=>document.querySelector(s);
+const stage=$('#stage'),cv=$('#bg'),g=cv.getContext('2d');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function rng(seed){return()=>{seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const fmt=s=>{s=Math.max(0,s|0);return String(s/60|0).padStart(2,'0')+':'+String(s%60).padStart(2,'0')};
+const hz=m=>440*2**((m-69)/12);
+
+/* ---------- música original: frases em sílabas, no tempo da batida ---------- */
+const BPM=96,SPB=60/BPM;
+const LINES=[
+ ['Li|guei |o |rá|dio |na es|tra|da',[64,64,65,67,67,65,64,62]],
+ ['teu |no|me |to|cou |ou|tra |vez',[62,62,64,65,65,64,62,60]],
+ ['a |lu|a a|ce|sa |na |sa|ca|da',[64,64,65,67,69,67,65,64,64]],
+ ['lem|bran|do |tu|do |que |tu |fez',[65,64,62,60,62,64,62,60]],
+ ['Can|ta |co|mi|go es|ta |noi|te',[67,67,69,71,72,71,69,67]],
+ ['ne|on |bri|lhan|do |no o|lhar',[69,69,67,65,64,65,67]],
+ ['Se o |mun|do a|pa|gar |a |luz',[67,67,69,71,72,74,72]],
+ ['a |gen|te |vai |con|ti|nu|ar',[72,71,69,67,65,64,62,60]],
+].map((L,i)=>{const parts=L[0].split('|'),start=8+i*8;
+  const syl=parts.map((p,j)=>{const b0=start+j*.5,b1=j<parts.length-1?b0+.5:b0+2;return{text:p,t0:b0*SPB,t1:b1*SPB,midi:L[1][j%L[1].length]}});
+  return{syl,t0:syl[0].t0,t1:syl[syl.length-1].t1}});
+const DUR=80*SPB;
+
+/* ---------- síntese (WebAudio): pad, baixo, bateria e a melodia guia ---------- */
+const A={ctx:null,master:null,sess:null,vbus:null,playing:false,offset:0,startCtx:0,noise:null};
+let semVoz=true;
+function ensureCtx(){if(A.ctx)return A.ctx;const ctx=new (window.AudioContext||window.webkitAudioContext)();
+  const comp=ctx.createDynamicsCompressor();comp.threshold.value=-14;comp.ratio.value=4;comp.connect(ctx.destination);
+  A.master=ctx.createGain();A.master.gain.value=.85;A.master.connect(comp);
+  const nb=ctx.createBuffer(1,ctx.sampleRate,ctx.sampleRate),d=nb.getChannelData(0),r=rng(9);for(let i=0;i<d.length;i++)d[i]=r()*2-1;A.noise=nb;
+  A.ctx=ctx;return ctx}
+const now=()=>A.playing?A.offset+(A.ctx.currentTime-A.startCtx):A.offset;
+function pad(notes,t,d,dst){const c=A.ctx;notes.forEach(m=>{const o=c.createOscillator(),o2=c.createOscillator(),gn=c.createGain(),lp=c.createBiquadFilter();
+  o.type='triangle';o.frequency.value=hz(m);o2.type='sine';o2.frequency.value=hz(m+12);lp.type='lowpass';lp.frequency.value=2600;const dec=Math.min(.7,d*.5);
+  gn.gain.setValueAtTime(0,t);gn.gain.linearRampToValueAtTime(.06,t+.02);gn.gain.linearRampToValueAtTime(.022,t+dec);gn.gain.setValueAtTime(.022,Math.max(t+dec,t+d-.1));gn.gain.linearRampToValueAtTime(0,t+d);
+  o.connect(lp);o2.connect(lp);lp.connect(gn);gn.connect(dst);o.start(t);o2.start(t);o.stop(t+d+.05);o2.stop(t+d+.05)})}
+function bass(m,t,d,dst){const c=A.ctx,o=c.createOscillator(),gn=c.createGain(),lp=c.createBiquadFilter();o.type='square';o.frequency.value=hz(m);lp.type='lowpass';lp.frequency.value=520;
+  gn.gain.setValueAtTime(0,t);gn.gain.linearRampToValueAtTime(.13,t+.01);gn.gain.linearRampToValueAtTime(.06,t+d*.6);gn.gain.linearRampToValueAtTime(0,t+d);o.connect(lp);lp.connect(gn);gn.connect(dst);o.start(t);o.stop(t+d+.02)}
+function kick(t,dst){const c=A.ctx,o=c.createOscillator(),gn=c.createGain();o.frequency.setValueAtTime(130,t);o.frequency.exponentialRampToValueAtTime(42,t+.12);
+  gn.gain.setValueAtTime(.55,t);gn.gain.exponentialRampToValueAtTime(.001,t+.28);o.connect(gn);gn.connect(dst);o.start(t);o.stop(t+.3)}
+let nOff=0;
+function hit(t,freq,vol,len,dst){const c=A.ctx,s=c.createBufferSource(),f=c.createBiquadFilter(),gn=c.createGain();s.buffer=A.noise;f.type='highpass';f.frequency.value=freq;
+  gn.gain.setValueAtTime(vol,t);gn.gain.exponentialRampToValueAtTime(.001,t+len);s.connect(f);f.connect(gn);gn.connect(dst);nOff=(nOff+.137)%.5;s.start(t,nOff);s.stop(t+len+.02)}
+function lead(m,t,d,dst){const c=A.ctx,o=c.createOscillator(),lfo=c.createOscillator(),lg=c.createGain(),gn=c.createGain(),lp=c.createBiquadFilter();
+  o.type='sawtooth';o.frequency.value=hz(m);lfo.frequency.value=5.5;lg.gain.value=hz(m)*.006;lfo.connect(lg);lg.connect(o.frequency);lp.type='lowpass';lp.frequency.value=2900;lp.Q.value=2;
+  gn.gain.setValueAtTime(0,t);gn.gain.linearRampToValueAtTime(.085,t+.03);gn.gain.setValueAtTime(.085,t+d-.06);gn.gain.linearRampToValueAtTime(0,t+d);o.connect(lp);lp.connect(gn);gn.connect(dst);o.start(t);lfo.start(t);o.stop(t+d+.02);lfo.stop(t+d+.02)}
+const CH=[[60,64,67],[59,62,67],[57,60,64],[57,60,65]],ROOT=[36,43,45,41];
+function schedule(off){const at=s=>A.startCtx+(s-off),ss=A.sess,vb=A.vbus;
+  for(let bar=0;bar<20;bar++){const b0=bar*4*SPB,b1=b0+4*SPB;if(b1>off){const s=Math.max(b0,off);pad(CH[bar%4],at(s),b1-s,ss)}
+    for(let beat=0;beat<4;beat++){const s=(bar*4+beat)*SPB;
+      if(bar>=1&&s>=off)bass(ROOT[bar%4]+(beat===2?12:0),at(s),SPB*.9,ss);
+      if(bar>=2&&bar<19&&s>=off){if(beat%2===0)kick(at(s),ss);else hit(at(s),1400,.16,.16,ss)}
+      if(bar<19)for(let h=0;h<2;h++){const hs=s+h*SPB/2;if(hs>=off)hit(at(hs),7200,h?.03:.05,.05,ss)}}}
+  LINES.forEach(L=>L.syl.forEach(sy=>{if(sy.t0>=off)lead(sy.midi,at(sy.t0),sy.t1-sy.t0-.03,vb)}))}
+function play(){const ctx=ensureCtx();if(ctx.state==='suspended')ctx.resume();if(A.offset>=DUR-.05)A.offset=0;
+  A.sess=ctx.createGain();A.sess.connect(A.master);A.vbus=ctx.createGain();A.vbus.gain.value=semVoz?0:.6;A.vbus.connect(A.sess);
+  A.startCtx=ctx.currentTime+.06;schedule(A.offset);A.playing=true;stage.classList.add('playing');V.t0=performance.now();sync()}
+function stopAudio(){if(A.sess){const s=A.sess,c=A.ctx;s.gain.setTargetAtTime(0,c.currentTime,.015);setTimeout(()=>s.disconnect(),120);A.sess=null}}
+function pause(){if(!A.playing)return;A.offset=Math.min(now(),DUR);A.playing=false;stopAudio();sync()}
+const toggle=()=>A.playing?pause():play();
+function restart(){if(A.playing){A.playing=false;stopAudio()}A.offset=0;play()}
+function sync(){$('#play').classList.toggle('on',A.playing);$('#playLbl').textContent=A.playing?'❚❚ Pausa':'▶ Play'}
+function setVoz(sem){semVoz=sem;document.querySelectorAll('[data-voz]').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.voz==='sem')===sem)));
+  if(A.vbus)A.vbus.gain.setTargetAtTime(sem?0:.6,A.ctx.currentTime,.03)}
+
+/* ---------- capa gerada (semente fixa): faixas diagonais, sol neon e título ---------- */
+(function cover(){const c=$('#cover'),x=c.getContext('2d'),W=600,r=rng(2000);
+  let gr=x.createLinearGradient(0,0,0,W);gr.addColorStop(0,'#1b0a4a');gr.addColorStop(.55,'#5a1d8f');gr.addColorStop(1,'#ff2a9a');x.fillStyle=gr;x.fillRect(0,0,W,W);
+  gr=x.createRadialGradient(400,250,0,400,250,170);gr.addColorStop(0,'#fff3b0');gr.addColorStop(.55,'#ffd400');gr.addColorStop(1,'rgba(255,90,60,0)');x.fillStyle=gr;x.beginPath();x.arc(400,250,170,0,7);x.fill();
+  x.fillStyle='rgba(27,10,74,.9)';for(let i=0;i<7;i++)x.fillRect(220,250+i*20,360,4+i*1.6);
+  x.save();x.translate(W/2,W/2);x.rotate(-.42);for(let i=-8;i<9;i++){x.fillStyle=i%2?'rgba(46,230,255,.5)':'rgba(255,255,255,.12)';x.fillRect(i*48,-500,10+r()*12,1000)}x.restore();
+  x.fillStyle='#fff';x.font='italic 900 74px "Exo 2", "Arial Black", sans-serif';x.save();x.translate(40,470);x.transform(1,0,-.2,1,0,0);
+  x.lineWidth=12;x.strokeStyle='#0a1650';x.strokeText('NEON NA',0,0);x.fillText('NEON NA',0,0);x.strokeText('AVENIDA',0,80);x.fillStyle='#ffd400';x.fillText('AVENIDA',0,80);x.restore();
+  x.fillStyle='rgba(255,255,255,.85)';x.font='26px VT323, monospace';x.fillText('BANDA DEMONSTRAÇÃO · 2000',40,56);
+  const url=c.toDataURL('image/jpeg',.85);$('#coverBg').style.backgroundImage=`url(${url})`;})();
+
+/* ---------- cenário da tela de abertura: pista em pseudo-3D com nuvens ---------- */
+const R=rng(7),PUFFS=Array.from({length:7},()=>({x:R(),y:.06+R()*.3,s:.006+R()*.01,sc:.6+R()*.8,b:Array.from({length:6},()=>({dx:(R()-.5)*.14,dy:(R()-.5)*.03,r:.025+R()*.035}))}));
+let W=0,H=0;
+function resize(){const dpr=Math.min(2,devicePixelRatio||1);W=stage.clientWidth;H=stage.clientHeight;cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);g.setTransform(dpr,0,0,dpr,0,0);slots.forEach(s=>s.li=-2)}
+function pista(T){const hzY=H*.5,vx=W*.5+Math.sin(T*.35)*W*.06;
+  let gr=g.createLinearGradient(0,0,0,hzY);gr.addColorStop(0,'#0a2fe6');gr.addColorStop(.6,'#3d93ff');gr.addColorStop(1,'#d6f1ff');g.fillStyle=gr;g.fillRect(0,0,W,hzY+1);
+  PUFFS.forEach(c=>{const cx=((c.x+T*c.s*.2)%1.3-.15)*W,cy=c.y*H;c.b.forEach(b=>{g.fillStyle='rgba(150,190,255,.55)';g.beginPath();g.arc(cx+b.dx*W*c.sc,cy+b.dy*H*c.sc+b.r*W*c.sc*.25,b.r*W*c.sc,0,7);g.fill()});
+    c.b.forEach(b=>{g.fillStyle='#fff';g.beginPath();g.arc(cx+b.dx*W*c.sc,cy+b.dy*H*c.sc,b.r*W*c.sc*.92,0,7);g.fill()})});
+  const spd=reduce?1.5:7;for(let y=hzY;y<H;y+=2){const p=(y-hzY)/(H-hzY)+.002,band=Math.floor(1/p*1.4+T*spd)%2,cx=vx+(W/2-vx)*p,half=p*W*.78,curb=half*.09;
+    g.fillStyle=band?'#1a46d8':'#1238c0';g.fillRect(0,y,W,2);g.fillStyle=band?'#e9eef8':'#d2d9e8';g.fillRect(cx-half,y,half*2,2);
+    g.fillStyle=band?'#ff2a3d':'#fff';g.fillRect(cx-half-curb,y,curb,2);g.fillRect(cx+half,y,curb,2);if(band){g.fillStyle='#ffd400';g.fillRect(cx-half*.025,y,half*.05,2)}}}
+
+/* ---------- legenda: frase fica até a próxima, contagem 5→1, palavra da vez pula ---------- */
+const slots=[0,1].map(i=>{const el=$('#slot'+i);return{el,wrap:el.querySelector('.wrap'),base:el.querySelector('.base'),fill:el.querySelector('.fill'),li:-2,pos:[],bs:[],fs:[],cur:-1,cn:null,dn:0}});
+function render(s,li){if(s.li===li)return;s.li=li;const L=LINES[li];s.base.textContent='';s.fill.textContent='';s.wrap.style.fontSize='';s.pos=[];s.bs=[];s.fs=[];s.cur=-1;
+  if(!L){s.fill.style.visibility='hidden';return}
+  L.syl.forEach(sy=>{const a=document.createElement('span');a.textContent=sy.text;s.base.appendChild(a);const b=document.createElement('span');b.textContent=sy.text;s.fill.appendChild(b);s.bs.push(a);s.fs.push(b)});
+  const avail=s.el.clientWidth*.9,w=s.wrap.offsetWidth;if(w>avail&&avail>0){const fs=parseFloat(getComputedStyle(s.el).fontSize);s.wrap.style.fontSize=(fs*avail/w)+'px'}
+  s.pos=s.bs.map(a=>({x:a.offsetLeft,w:a.offsetWidth}));s.W=s.wrap.offsetWidth}
+function wipe(s,t){const L=LINES[s.li];if(!L)return;let x=0,cur=-1;
+  for(let k=0;k<L.syl.length;k++){const sy=L.syl[k],p=s.pos[k];if(!p)break;if(t>=sy.t1){x=p.x+p.w;continue}if(t>sy.t0){x=p.x+p.w*((t-sy.t0)/(sy.t1-sy.t0));cur=k}break}
+  if(s.cur!==cur){if(s.cur>=0&&s.bs[s.cur]){s.bs[s.cur].style.transform='';s.fs[s.cur].style.transform=''}s.cur=cur}
+  if(cur>=0&&!reduce){const sy=L.syl[cur],p=(t-sy.t0)/(sy.t1-sy.t0),e=p<.2?1-(1-p/.2)**3:1-.65*Math.min(1,(p-.2)/.5),tr=`translateY(${(-.14*e).toFixed(3)}em) scale(${(1+.16*e).toFixed(3)})`;s.bs[cur].style.transform=tr;s.fs[cur].style.transform=tr}
+  if(x<=0){s.fill.style.visibility='hidden';return}s.fill.style.visibility='visible';s.fill.style.clipPath=`inset(-40% ${x>=s.W-.5?-40:s.W-x}px -40% -40px)`}
+function count(s,n,f){if(s.dn!==n){s.dn=n;if(s.cn){s.cn.remove();s.cn=null}if(n){s.cn=document.createElement('span');s.cn.className='cnt';s.cn.innerHTML=`<i>${n}</i>`;s.el.appendChild(s.cn)}}
+  if(n&&s.cn&&!reduce){const pop=f<.22?1+.35*(1-f/.22)**2:1;s.cn.style.transform=`skewX(-12deg) scale(${pop.toFixed(3)})`}}
+function update(t){const n=LINES.length;let c=-1;while(c+1<n&&LINES[c+1].t0<=t)c++;let show=Math.max(0,c);if(c>=0&&c+1<n&&t>LINES[c].t1+2.5)show=c+1;
+  const want=[-1,-1];if(show<n)want[show%2]=show;if(show+1<n)want[(show+1)%2]=show+1;
+  const u=c+1;let ci=-1,cn=0,cf=0;
+  if(u<n&&(c<0||t>=LINES[c].t1)){const L=LINES[u],gap=u===0?L.t0:L.t0-LINES[u-1].t1,rem=L.t0-t,from=Math.min(5,Math.floor((gap-.4)/SPB));
+    if(rem>0&&from>=3&&rem<=from*SPB){cn=Math.ceil(rem/SPB);cf=cn-rem/SPB;ci=u%2}}
+  slots.forEach((s,i)=>{render(s,want[i]);wipe(s,t);count(s,ci===i?cn:0,cf)});
+  $('#osdState').textContent=A.playing?'▶ PLAY':(t>0?'❚❚ PAUSE':'■ STOP');const f=fmt(t);$('#osdTime').textContent=f;$('#tCur').textContent=f;$('#barFill').style.width=(t/DUR*100).toFixed(2)+'%'}
+
+/* ---------- vinil: sai da capa e gira a 33⅓ rpm enquanto toca ---------- */
+const V={t0:0,ang:0,last:0};
+function vinyl(ts){const dt=V.last?ts-V.last:0;V.last=ts;if(!stage.classList.contains('playing'))return;
+  const p=Math.min(1,(ts-V.t0)/900),e=1-(1-p)**3;$('#vinyl').style.setProperty('--vx',(46*e).toFixed(2)+'%');$('#coverTx').style.setProperty('--vout',(25*.92*.46*e).toFixed(2)+'cqw');
+  if(A.playing&&!reduce)V.ang=(V.ang+dt*.2)%360;$('#disc').style.transform=`rotate(${V.ang.toFixed(1)}deg)`}
+
+function frame(ts){const T=(reduce?.25:1)*ts/1000;if(W&&H&&!stage.classList.contains('playing'))pista(T);
+  let t=A.ctx?now():A.offset;if(A.playing&&t>=DUR){A.offset=0;A.playing=false;stopAudio();sync();stage.classList.remove('playing');t=0}
+  update(t);vinyl(ts);requestAnimationFrame(frame)}
+
+new ResizeObserver(resize).observe(stage);resize();
+$('#tDur').textContent=fmt(DUR);
+$('#start').onclick=play;$('#play').onclick=toggle;$('#restart').onclick=restart;
+document.querySelectorAll('[data-voz]').forEach(b=>b.onclick=()=>setVoz(b.dataset.voz==='sem'));
+document.addEventListener('keydown',e=>{if(e.target.matches&&e.target.matches('input,textarea'))return;const k=e.key.toLowerCase();
+  if(k===' '){e.preventDefault();toggle()}else if(k==='r')restart();else if(k==='v')setVoz(!semVoz)});
+requestAnimationFrame(frame);
+})();
+</script>
+
+</body>
+</html>
