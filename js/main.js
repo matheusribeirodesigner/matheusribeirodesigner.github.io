@@ -469,6 +469,8 @@
     web: [
       { slug: 'spw', title: 'SPW', category: 'Web & Landing Pages', count: 1 },
       { slug: 'site-playcity', title: 'Site Playcity', category: 'Web & Landing Pages', count: 1 },
+      // abre a página da demo (karaoke-2000/) em vez da galeria
+      { slug: 'karaoke-2000', title: 'Karaokê 2000', category: 'Web & Landing Pages', count: 1, href: 'karaoke-2000/', cta: 'Abrir demo ↗' },
     ],
     ia: [
       { slug: 'clinicou-brasao', title: 'Brasão — Clinicou Med Estácio (IA)', category: 'IA para Criação Visual & Vídeos', count: 1, video: true },
@@ -508,6 +510,19 @@
         const media = project.video
           ? `<video src="${cover}" muted loop playsinline preload="none" data-video-card controlsList="nodownload" disablePictureInPicture${focusStyle}></video>`
           : `<img src="${cover}" alt="${project.title} — ${project.category}" loading="lazy" draggable="false"${focusStyle}>`;
+        const label = project.cta || `${images.length} peça${images.length > 1 ? 's' : ''}`;
+        if (project.href) {
+          return `<a class="project-card project-card--link" href="${project.href}">
+          <div class="project-card__media">
+            ${media}
+            <div class="project-card__scrim"></div>
+            <div class="project-card__info">
+              <span class="project-card__title">${project.title}</span>
+              <span class="project-card__count">${label}</span>
+            </div>
+          </div>
+        </a>`;
+        }
         return `<button type="button" class="project-card" data-category="${category}" data-project-index="${i}" aria-haspopup="dialog">
           <div class="project-card__media">
             ${media}

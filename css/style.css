@@ -709,3 +709,6 @@ body.modal-open { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] { opacity: 1; transform: none; }
 }
+
+/* card que abre uma página própria (ex.: Karaokê 2000) em vez da galeria */
+a.project-card { text-decoration: none; color: inherit; }
